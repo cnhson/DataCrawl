@@ -1,0 +1,19 @@
+{
+  "java.project.sourcePaths": ["src"],
+  "java.project.outputPath": "bin",
+  "java.project.referencedLibraries": [
+    "lib/**/*.jar",
+    "c:\\Users\\ssonp\\Desktop\\guava-33.0.0-jre.jar",
+    "d:\\JavaVSLibrary\\guava-33.0.0-jre.jar",
+    "d:\\JavaVSLibrary\\jackson-databind-2.11.1.jar",
+    "d:\\JavaVSLibrary\\jackson-databind-2.8.10.jar",
+    "d:\\JavaVSLibrary\\jackson-core-2.8.10.jar",
+    "d:\\JavaVSLibrary\\httpclient-4.5.13.jar",
+    "d:\\JavaVSLibrary\\httpclient-4.5.5.jar",
+    "d:\\JavaVSLibrary\\httpcore-4.4.5.jar",
+    "d:\\JavaVSLibrary\\jackson-annotations-2.4.5.jar",
+    "d:\\JavaVSLibrary\\json-20240205.jar",
+    "d:\\JavaVSLibrary\\commons-logging-1.1.1.jar",
+    "d:\\JavaVSLibrary\\gson-2.10.1.jar"
+  ]
+}
