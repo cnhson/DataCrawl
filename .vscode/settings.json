@@ -15,5 +15,6 @@
     "d:\\JavaVSLibrary\\json-20240205.jar",
     "d:\\JavaVSLibrary\\commons-logging-1.1.1.jar",
     "d:\\JavaVSLibrary\\gson-2.10.1.jar"
-  ]
+  ],
+  "java.configuration.updateBuildConfiguration": "automatic"
 }
