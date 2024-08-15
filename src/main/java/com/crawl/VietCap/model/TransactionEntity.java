@@ -70,12 +70,19 @@ public class TransactionEntity {
         this.tradingDate = tradingDate;
     }
 
+    public Long getLongTradingDate() {
+        return this.tradingDate + 0L;
+    }
+
     public Integer getPriceChange() {
         return this.priceChange;
     }
 
     public void setPriceChange(Integer priceChange) {
-        this.priceChange = priceChange;
+        if (priceChange == null) {
+            this.priceChange = 0;
+        } else
+            this.priceChange = priceChange;
     }
 
     public BigDecimal getPercentPriceChange() {
@@ -83,7 +90,10 @@ public class TransactionEntity {
     }
 
     public void setPercentPriceChange(BigDecimal percentPriceChange) {
-        this.percentPriceChange = percentPriceChange;
+        if (percentPriceChange == null) {
+            this.percentPriceChange = new BigDecimal(0.00);
+        } else
+            this.percentPriceChange = percentPriceChange;
     }
 
     public Integer getOpenPrice() {
@@ -91,7 +101,10 @@ public class TransactionEntity {
     }
 
     public void setOpenPrice(Integer openPrice) {
-        this.openPrice = openPrice;
+        if (openPrice == null) {
+            this.openPrice = 0;
+        } else
+            this.openPrice = openPrice;
     }
 
     public Integer getClosePrice() {
@@ -99,7 +112,10 @@ public class TransactionEntity {
     }
 
     public void setClosePrice(Integer closePrice) {
-        this.closePrice = closePrice;
+        if (closePrice == null) {
+            this.closePrice = 0;
+        } else
+            this.closePrice = closePrice;
     }
 
     public Integer getHighestPrice() {
@@ -107,7 +123,10 @@ public class TransactionEntity {
     }
 
     public void setHighestPrice(Integer highestPrice) {
-        this.highestPrice = highestPrice;
+        if (highestPrice == null) {
+            this.highestPrice = 0;
+        } else
+            this.highestPrice = highestPrice;
     }
 
     public Integer getLowestPrice() {
@@ -115,7 +134,10 @@ public class TransactionEntity {
     }
 
     public void setLowestPrice(Integer lowestPrice) {
-        this.lowestPrice = lowestPrice;
+        if (lowestPrice == null) {
+            this.lowestPrice = 0;
+        } else
+            this.lowestPrice = lowestPrice;
     }
 
     public Integer getTotalMatchVolume() {
@@ -123,7 +145,10 @@ public class TransactionEntity {
     }
 
     public void setTotalMatchVolume(Integer totalMatchVolume) {
-        this.totalMatchVolume = totalMatchVolume;
+        if (totalMatchVolume == null) {
+            this.totalMatchVolume = 0;
+        } else
+            this.totalMatchVolume = totalMatchVolume;
     }
 
     public Long getTotalMatchValue() {
@@ -131,7 +156,10 @@ public class TransactionEntity {
     }
 
     public void setTotalMatchValue(Long totalMatchValue) {
-        this.totalMatchValue = totalMatchValue;
+        if (totalMatchValue == null) {
+            this.totalMatchValue = 0L;
+        } else
+            this.totalMatchValue = totalMatchValue;
     }
 
     public Integer getTotalDealVolume() {
@@ -139,7 +167,10 @@ public class TransactionEntity {
     }
 
     public void setTotalDealVolume(Integer totalDealVolume) {
-        this.totalDealVolume = totalDealVolume;
+        if (totalDealVolume == null) {
+            this.totalDealVolume = 0;
+        } else
+            this.totalDealVolume = totalDealVolume;
     }
 
     public Long getTotalDealValue() {
@@ -147,7 +178,10 @@ public class TransactionEntity {
     }
 
     public void setTotalDealValue(Long totalDealValue) {
-        this.totalDealValue = totalDealValue;
+        if (totalDealValue == null) {
+            this.totalDealValue = 0L;
+        } else
+            this.totalDealValue = totalDealValue;
     }
 
     public Integer getUnMatchedBuyTradeVolume() {
@@ -155,7 +189,10 @@ public class TransactionEntity {
     }
 
     public void setUnMatchedBuyTradeVolume(Integer unMatchedBuyTradeVolume) {
-        this.unMatchedBuyTradeVolume = unMatchedBuyTradeVolume;
+        if (unMatchedBuyTradeVolume == null) {
+            this.unMatchedBuyTradeVolume = 0;
+        } else
+            this.unMatchedBuyTradeVolume = unMatchedBuyTradeVolume;
     }
 
     public Integer getUnMatchedSellTradeVolume() {
@@ -163,7 +200,10 @@ public class TransactionEntity {
     }
 
     public void setUnMatchedSellTradeVolume(Integer unMatchedSellTradeVolume) {
-        this.unMatchedSellTradeVolume = unMatchedSellTradeVolume;
+        if (unMatchedBuyTradeVolume == null) {
+            this.unMatchedBuyTradeVolume = 0;
+        } else
+            this.unMatchedSellTradeVolume = unMatchedSellTradeVolume;
     }
 
     public Long getTotalValue() {
@@ -171,7 +211,10 @@ public class TransactionEntity {
     }
 
     public void setTotalValue(Long totalValue) {
-        this.totalValue = totalValue;
+        if (totalValue == null) {
+            this.totalValue = 0L;
+        } else
+            this.totalValue = totalValue;
     }
 
     public Integer getTotalVolume() {
@@ -179,7 +222,10 @@ public class TransactionEntity {
     }
 
     public void setTotalVolume(Integer totalVolume) {
-        this.totalVolume = totalVolume;
+        if (totalVolume == null) {
+            this.totalVolume = 0;
+        } else
+            this.totalVolume = totalVolume;
     }
 
     public String getStockSymbol() {

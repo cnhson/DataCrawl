@@ -3,10 +3,9 @@ package com.crawl.VietCap.controller;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
+import com.crawl.VietCap.bodyParam.BusinessProfileBody;
 import com.crawl.VietCap.endpoints.HTTPRequest;
-import com.crawl.VietCap.lib.ExcelUtil;
-import com.crawl.VietCap.model.RequestBody;
-import com.crawl.VietCap.model.TransactionEntity;
+import com.crawl.VietCap.model.BusinessProfileEntity;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,32 +14,31 @@ import com.google.gson.reflect.TypeToken;
 
 import io.restassured.response.Response;
 
-public class TransactionExcel {
+public class BusinessProfileRequest {
 
-    public void crawlData(String inputSymbol, Integer pageNum, Integer limit, String startDate, String endDate) {
-
+    public BusinessProfileEntity[] crawlData(String filename, String inputSymbol) {
         try {
             Gson gson = new Gson();
-
             Type gsonType = new TypeToken<HashMap<String, Object>>() {
             }.getType();
+
             String bodyToString = gson
-                    .toJson(RequestBody.get(inputSymbol, pageNum, limit, startDate, endDate), gsonType);
+                    .toJson(BusinessProfileBody.get(inputSymbol), gsonType);
             HTTPRequest request = new HTTPRequest(bodyToString);
             Response response = request.post();
             String jsonString = response.then().extract().asString();
             JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
-            JsonElement transDataArray = jsonObject.get("data").getAsJsonObject().get("TickerPriceHistory")
+            JsonElement transDataArray = jsonObject.get("data").getAsJsonObject().get("CompanyFinancialRatio")
                     .getAsJsonObject()
-                    .get("history");
+                    .get("ratio");
 
-            TransactionEntity[] transList = gson.fromJson(transDataArray,
-                    TransactionEntity[].class);
+            BusinessProfileEntity[] businessProfileList = gson.fromJson(transDataArray,
+                    BusinessProfileEntity[].class);
 
-            ExcelUtil excelUtil = new ExcelUtil("VietCapCrawl_VCI_" + startDate + "_" + endDate);
-            excelUtil.writeContent(transList);
+            return businessProfileList;
         } catch (Exception e) {
             System.err.println(e.getMessage());
+            return null;
         }
     }
 

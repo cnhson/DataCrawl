@@ -1,7 +1,7 @@
 package com.crawl.VietCap.controller;
 
+import com.crawl.VietCap.bodyParam.TransactionRequestBody;
 import com.crawl.VietCap.endpoints.HTTPRequest;
-import com.crawl.VietCap.model.RequestBody;
 import com.crawl.VietCap.util.JsonUtil;
 import com.google.gson.JsonObject;
 import io.restassured.response.Response;
@@ -20,7 +20,7 @@ public class TransactionServer {
             String endDate = JsonUtil.getJsonValue(jsonRequestBody, "endDate");
             ////
             String bodyToString = JsonUtil
-                    .getMapToStringJson(RequestBody.get(inputSymbol, pageNum, limit, startDate, endDate));
+                    .getMapToStringJson(TransactionRequestBody.get(inputSymbol, pageNum, limit, startDate, endDate));
             ////
             HTTPRequest request = new HTTPRequest(bodyToString);
             Response response = request.post();

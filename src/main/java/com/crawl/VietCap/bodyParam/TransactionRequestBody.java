@@ -1,11 +1,11 @@
-package com.crawl.VietCap.model;
+package com.crawl.VietCap.bodyParam;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.JsonParser;
 
-public class RequestBody {
+public class TransactionRequestBody {
 
     private static String query = "query Query($ticker: String!, $offset: Int!, $limit: Int!, $fromDate: String!, $toDate: String!) "
             +
@@ -21,18 +21,19 @@ public class RequestBody {
             "history { " +
             "tradingDate " +
             "priceChange " +
+            // "percentPriceChange " +
             "openPrice " +
             "closePrice " +
             "highestPrice " +
             "lowestPrice " +
             "totalMatchVolume " +
             "totalMatchValue " +
-            "totalDealVolume " +
-            "totalDealValue " +
+            // "totalDealVolume " +
+            // "totalDealValue " +
             "totalVolume " +
             "totalValue " +
-            "unMatchedBuyTradeVolume " +
-            "unMatchedSellTradeVolume " +
+            // "unMatchedBuyTradeVolume " +
+            // "unMatchedSellTradeVolume " +
             "} " +
             "} " +
             "}";
@@ -61,6 +62,5 @@ public class RequestBody {
             System.err.println(e.getMessage());
             return null;
         }
-
     }
 }
