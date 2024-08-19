@@ -1,6 +1,6 @@
 package com.crawl.VietCap.controller;
 
-import com.crawl.VietCap.bodyParam.TransactionRequestBody;
+import com.crawl.VietCap.bodyParam.TransactionBody;
 import com.crawl.VietCap.endpoints.HTTPRequest;
 import com.crawl.VietCap.util.JsonUtil;
 import com.google.gson.JsonObject;
@@ -20,9 +20,11 @@ public class TransactionServer {
             String endDate = JsonUtil.getJsonValue(jsonRequestBody, "endDate");
             ////
             String bodyToString = JsonUtil
-                    .getMapToStringJson(TransactionRequestBody.get(inputSymbol, pageNum, limit, startDate, endDate));
+                    .getMapToStringJson(TransactionBody.get(inputSymbol, pageNum, limit, startDate, endDate));
             ////
-            HTTPRequest request = new HTTPRequest(bodyToString);
+            HTTPRequest request = new HTTPRequest();
+            request.setPayLoad(bodyToString);
+            request.setRequestUrl("https://api.vietcap.com.vn/data-mt/graphql");
             Response response = request.post();
             String jsonString = response.then().extract().asString();
             ////

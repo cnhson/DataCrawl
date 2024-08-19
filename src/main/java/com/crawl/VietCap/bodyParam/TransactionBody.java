@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.google.gson.JsonParser;
 
-public class TransactionRequestBody {
+public class TransactionBody {
 
     private static String query = "query Query($ticker: String!, $offset: Int!, $limit: Int!, $fromDate: String!, $toDate: String!) "
             +

@@ -2,8 +2,9 @@ package com.crawl.VietCap.controller;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 
-import com.crawl.VietCap.bodyParam.TransactionRequestBody;
+import com.crawl.VietCap.bodyParam.TransactionBody;
 import com.crawl.VietCap.endpoints.HTTPRequest;
 import com.crawl.VietCap.model.TransactionEntity;
 import com.google.gson.Gson;
@@ -16,7 +17,9 @@ import io.restassured.response.Response;
 
 public class TransactionRequest {
 
-    public TransactionEntity[] crawlData(String filename, String inputSymbol, Integer pageNum, Integer limit,
+    private Integer totalRecords;
+
+    public List<TransactionEntity> crawlData(String inputSymbol, Integer pageNum, Integer limit,
             String startDate, String endDate) {
 
         try {
@@ -25,17 +28,22 @@ public class TransactionRequest {
             }.getType();
 
             String bodyToString = gson
-                    .toJson(TransactionRequestBody.get(inputSymbol, pageNum, limit, startDate, endDate), gsonType);
-            HTTPRequest request = new HTTPRequest(bodyToString);
+                    .toJson(TransactionBody.get(inputSymbol, pageNum, limit, startDate, endDate), gsonType);
+            HTTPRequest request = new HTTPRequest();
+            request.setPayLoad(bodyToString);
+            request.setRequestUrl("https://api.vietcap.com.vn/data-mt/graphql");
             Response response = request.post();
             String jsonString = response.then().extract().asString();
-            JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
-            JsonElement transDataArray = jsonObject.get("data").getAsJsonObject().get("TickerPriceHistory")
-                    .getAsJsonObject()
-                    .get("history");
+            JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject()
+                    .get("data").getAsJsonObject().get("TickerPriceHistory").getAsJsonObject();
 
-            TransactionEntity[] transList = gson.fromJson(transDataArray,
-                    TransactionEntity[].class);
+            setTotalRecords(jsonObject.get("totalRecords").getAsInt());
+
+            Type transListType = new TypeToken<List<TransactionEntity>>() {
+            }.getType();
+
+            List<TransactionEntity> transList = gson.fromJson(jsonObject.get("history"),
+                    transListType);
             return transList;
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -43,6 +51,13 @@ public class TransactionRequest {
         }
     }
 
+    private void setTotalRecords(Integer totalRecords) {
+        this.totalRecords = totalRecords;
+    }
+
+    public Integer getTotalRecords() {
+        return totalRecords;
+    }
     // private static double checkValue(Double value, double defaultValue) {
     // return value != null ? value : defaultValue;
     // }

@@ -61,7 +61,7 @@ public class TransactionEntity {
 
     public String getFormatStringTradingDate() {
         Date date = new Date(this.tradingDate);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String formattedDate = sdf.format(date);
         return formattedDate;
     }

@@ -11,22 +11,29 @@ import io.restassured.response.Response;
 public class HTTPRequest {
 
     private String payload;
-    private String requestUrl = "https://api.vietcap.com.vn/data-mt/graphql";
+    private String requestUrl;
     private Map<String, String> headersConfig = new HashMap<>();
 
-    public HTTPRequest(String payload) {
+    public HTTPRequest() {
         try {
-            this.payload = payload;
             setDefaultHeadersConfig();
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
     }
 
-    public void setDefaultHeadersConfig() {
+    private void setDefaultHeadersConfig() {
         this.headersConfig.put("Accept-language", "en-US,en;q=0.5");
         this.headersConfig.put("Content-type", "application/json");
         this.headersConfig.put("Accept", "application/json");
+    }
+
+    public void setPayLoad(String payload) {
+        this.payload = payload;
+    }
+
+    public void setRequestUrl(String requestUrl) {
+        this.requestUrl = requestUrl;
     }
 
     public Response post() {
@@ -36,5 +43,15 @@ public class HTTPRequest {
                 .body(this.payload)
                 .when()
                 .post(this.requestUrl);
+
     }
+
+    public Response get() {
+        return given()
+                .headers(this.headersConfig)
+                .accept(ContentType.ANY)
+                .when()
+                .post(this.requestUrl);
+    }
+
 }

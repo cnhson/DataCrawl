@@ -1,4 +1,6 @@
-package com.crawl;
+package com.crawl.VietCap.run;
+
+import java.util.List;
 
 import com.crawl.VietCap.controller.BusinessProfileRequest;
 import com.crawl.VietCap.model.BusinessProfileEntity;
@@ -9,14 +11,15 @@ import com.crawl.VietCap.util.ExcelUtil;
 public class ExportBusinessProfile {
     public static void main(String[] args) {
 
-        String[] vn30SymbolList = { "VCI", "VHM", "VRE", "VNM", "GAS", "SAB", "BID",
-                "CTG", "BVH", "STB", "KBC",
-                "NVL", "CII", "MBB", "PNJ", "DHG", "DPM", "HCM", "BMP", "REE", "NT2", "BMI",
-                "EIB" };
+        // String[] vn30SymbolList = { "VCI", "VHM", "VRE", "VNM", "GAS", "SAB", "BID",
+        // "CTG", "BVH", "STB", "KBC",
+        // "NVL", "CII", "MBB", "PNJ", "DHG", "DPM", "HCM", "BMP", "REE", "NT2", "BMI",
+        // "EIB" };
 
-        // String[] vn30SymbolList = { "VCI" };
-        String[] headersList = new String[] {
-                "Date", "Enterprise_Value", "Issue_Share",
+        String[] vn30SymbolList = { "VCI", "VHM" };
+
+        String[] extendHeadersList = new String[] {
+                "Enterprise_Value", "Issue_Share",
                 "Eps", "Pb", "Pe"
         };
         String filename = "vietcap_business_profile";
@@ -27,9 +30,9 @@ public class ExportBusinessProfile {
         eu.setFileName(filename);
 
         for (String symbol : vn30SymbolList) {
-            eu.addNewSymbolSheet(symbol, headersList);
+            // eu.addNewSymbolSheet(symbol, headersList);
             // eu.setHeadersConfig(headersList);
-            BusinessProfileEntity[] transList = bpr.crawlData(filename, symbol);
+            List<BusinessProfileEntity> transList = bpr.crawlData(symbol);
 
             // Arrays.sort(transList,
             // Comparator.comparingLong(BusinessProfileEntity::getLongTradingDate));
