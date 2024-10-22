@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.crawl.VietCap.controller.BusinessProfileRequest;
 import com.crawl.VietCap.model.BusinessProfileEntity;
-import com.crawl.VietCap.util.ExcelUtil;
+import com.crawl.VietCap.util.ExcelWriteUtil;
 
 //`import com.foxthehuman.VietCapCrawl.controller.TransactionController;
 
@@ -24,7 +24,7 @@ public class ExportBusinessProfile {
         };
         String filename = "vietcap_business_profile";
 
-        ExcelUtil eu = new ExcelUtil();
+        ExcelWriteUtil eu = new ExcelWriteUtil();
         BusinessProfileRequest bpr = new BusinessProfileRequest();
 
         eu.setFileName(filename);

@@ -19,6 +19,7 @@ import io.restassured.response.Response;
 public class BusinessProfileRequest {
 
     public List<BusinessProfileEntity> crawlData(String inputSymbol) {
+        Response response = null;
         try {
             Gson gson = new Gson();
             Type gsonType = new TypeToken<HashMap<String, Object>>() {
@@ -29,7 +30,7 @@ public class BusinessProfileRequest {
             HTTPRequest request = new HTTPRequest();
             request.setPayLoad(bodyToString);
             request.setRequestUrl("https://api.vietcap.com.vn/data-mt/graphql");
-            Response response = request.post();
+            response = request.post();
             String jsonString = response.then().extract().asString();
             JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
             JsonElement transDataArray = jsonObject.get("data").getAsJsonObject().get("CompanyFinancialRatio")
@@ -47,11 +48,10 @@ public class BusinessProfileRequest {
             System.err.println("[BusinessProfileRequest] Current symbol:" + inputSymbol);
             System.err
                     .println("[BusinessProfileRequest] Error: " + e.getMessage());
+            System.err.println("[BusinessProfileRequest] Response: " + response.asString());
             return null;
         }
     }
 
-    // private static double checkValue(Double value, double defaultValue) {
-    // return value != null ? value : defaultValue;
-    // }
+
 }

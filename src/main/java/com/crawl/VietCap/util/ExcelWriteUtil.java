@@ -15,28 +15,22 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
-public class ExcelUtil {
+public class ExcelWriteUtil {
 
     private SXSSFSheet sheet;
     private SXSSFWorkbook workbook;
-    private File file;
-    private FileInputStream fis;
+    // private File file;
+    // private FileInputStream fis;
     private Row row;
     private Integer rowIndex = 1;
     private FileOutputStream fileOut;
     private String[] baseHeadersList = new String[] {
-            "Stock_ID", "Date", "Items_Name", "Items_Value",
+            "Product_ID", "Report_Date", "Items_Name", "Items_Value",
     };
-    private String[] extendHeaderList = new String[] { "Open_Price", "Close_Price",
-            "Highest_Price", "Lowest_Price", "Total_Match_Volume", "Total_Match_Value",
-            "Total_Value", "Total_Volume", "ATV_10", "AMTV_10",
-            "RSI_14", "MA_10", "MACD"
-    };
-    // private String symbol;
 
-    private String PUBLIC_RESOURCE_PATH = "src/main/resources/";
+    private String PUBLIC_RESOURCE_PATH = "src/main/resources/export_excel/";
 
-    public ExcelUtil() {
+    public ExcelWriteUtil() {
 
     }
 
@@ -45,7 +39,7 @@ public class ExcelUtil {
             this.fileOut = new FileOutputStream(new File(PUBLIC_RESOURCE_PATH + fileName + ".xlsx"));
 
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -107,35 +101,6 @@ public class ExcelUtil {
         }
     }
 
-    // public void createHeaders(String[] headers) {
-    // this.headerRow = this.sheet.createRow(0);
-    // for (int i = 0; i < headers.length; i++) {
-    // Cell cell = this.headerRow.createCell(i);
-    // cell.setCellValue(headers[i].toString());
-    // }
-    // }
-
-    // public <T> void loopWriteContentTest(T[] entityList, BiConsumer<Row, T>
-    // innerFunction) {
-    // try {
-    // createBaseHeaders();
-    // for (T entity : entityList) {
-    // for (String extendHeader : this.extendHeaderList) {
-    // Row row = sheet.createRow(1);
-    // row.createCell(2).setCellValue(extendHeader);
-    // row.cellIterator().next().setCellValue("?");
-    // innerFunction.accept(row, entity);
-    // }
-    // }
-    // } catch (
-
-    // Exception e) {
-    // System.err.println("Error in writing content to excel file: " +
-    // e.getMessage());
-
-    // }
-    // }
-
     public <T> void loopWriteContent(List<T> entityList, BiConsumer<Row, T> innerFunction) {
         try {
             Integer rowNum = 1;
@@ -157,7 +122,7 @@ public class ExcelUtil {
             workbook.close();
 
         } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
         }
     }
 }

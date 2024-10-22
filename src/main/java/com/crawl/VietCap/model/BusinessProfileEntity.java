@@ -7,7 +7,7 @@ public class BusinessProfileEntity {
     private Integer yearReport;
     private Integer lengthReport;
     // Vốn hóa - Enterprise value
-    private Long ev = 0L;
+    private Long ev;
     // Số cổ phiếu lưu hành - issue share
     private Long issueShare;
     private BigDecimal eps;
@@ -35,9 +35,6 @@ public class BusinessProfileEntity {
     }
 
     public Long getEv() {
-        if (this.ev == null)
-            return 0L;
-        else
             return this.ev;
     }
 
@@ -46,9 +43,6 @@ public class BusinessProfileEntity {
     }
 
     public Long getIssueShare() {
-        if (this.issueShare == null)
-            return 0L;
-        else
             return issueShare;
     }
 
@@ -57,9 +51,6 @@ public class BusinessProfileEntity {
     }
 
     public BigDecimal getEps() {
-        if (this.eps == null)
-            return new BigDecimal(0);
-        else
             return this.eps;
     }
 
@@ -68,9 +59,6 @@ public class BusinessProfileEntity {
     }
 
     public BigDecimal getPe() {
-        if (this.pe == null)
-            return new BigDecimal(0);
-        else
             return this.pe;
     }
 
@@ -79,9 +67,6 @@ public class BusinessProfileEntity {
     }
 
     public BigDecimal getPb() {
-        if (this.pb == null)
-            return new BigDecimal(0);
-        else
             return this.pb;
     }
 

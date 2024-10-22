@@ -15,7 +15,7 @@ import com.crawl.VietCap.controller.BusinessProfileRequest;
 import com.crawl.VietCap.controller.TransactionRequest;
 import com.crawl.VietCap.model.BusinessProfileEntity;
 import com.crawl.VietCap.model.TransactionEntity;
-import com.crawl.VietCap.util.ExcelUtil;
+import com.crawl.VietCap.util.ExcelWriteUtil;
 import com.crawl.VietCap.util.TextUtil;
 
 //`import com.foxthehuman.VietCapCrawl.controller.TransactionController;
@@ -23,7 +23,7 @@ import com.crawl.VietCap.util.TextUtil;
 public class ExportTransactionExcel {
     public static void main(String[] args) throws InterruptedException {
         Integer fileNameIndex = 1;
-        ExcelUtil eu = new ExcelUtil();
+        ExcelWriteUtil eu = new ExcelWriteUtil();
         TransactionRequest vct = new TransactionRequest();
         BusinessProfileRequest bpr = new BusinessProfileRequest();
         TextUtil lastestTickerFetchUtil = new TextUtil("src/main/resources/lastestTickerFetchList.txt");
@@ -48,7 +48,7 @@ public class ExportTransactionExcel {
             Integer limit = 5000;
 
             // String startDate = "2000-01-01";
-            String startDate = "2000-01-01";
+            String startDate = "2024-08-01";
             String endDate = "2100-01-01";
             // Boolean continueFetch = true;
 
@@ -57,7 +57,9 @@ public class ExportTransactionExcel {
             eu.setFileName(filename + fileNameIndex);
 
             for (int j = 0; j < ticketList.size(); j++) {
+                Thread.sleep(500);
                 String symbol = ticketList.get(j);
+                System.out.println("\nCurrent symbol: " + symbol);
                 List<TransactionEntity> transList = vct.crawlData(symbol, pageNum,
                         limit, startDate, endDate);
                 List<BusinessProfileEntity> businessProfileList = bpr.crawlData(symbol);
@@ -99,12 +101,26 @@ public class ExportTransactionExcel {
                     String MACD_Value = calculateMACD(MACD_array, prevArray, MACD_Days,
                             entity.getClosePrice());
 
-                    Object[] extendValueList = new Object[] { entity.getOpenPrice(), entity.getClosePrice(),
-                            entity.getHighestPrice(), entity.getLowestPrice(),
-                            entity.getTotalMatchVolume(), entity.getTotalMatchValue(), entity.getTotalValue(),
-                            entity.getTotalVolume(), averageTotalVolumeValue,
-                            averageTotalMatchVolumeValue, RSI_Value, MA_Value, MACD_Value, foundBPE.getEv(),
-                            foundBPE.getIssueShare(), foundBPE.getEps(), foundBPE.getPe(), foundBPE.getPb() };
+                    Object[] extendValueList = new Object[] {
+                        entity.getOpenPrice(), 
+                        entity.getClosePrice(),
+                        entity.getHighestPrice(), 
+                        entity.getLowestPrice(),
+                        entity.getTotalMatchVolume(), 
+                        entity.getTotalMatchValue(), 
+                        entity.getTotalValue(),
+                        entity.getTotalVolume(), 
+                        averageTotalVolumeValue,
+                        averageTotalMatchVolumeValue, 
+                        RSI_Value, 
+                        MA_Value, 
+                        MACD_Value, 
+                        foundBPE.getEv() != null ? foundBPE.getEv().toString() : "N/A",  
+                        foundBPE.getIssueShare() != null ? foundBPE.getIssueShare().toString() : "N/A",  
+                        foundBPE.getEps() != null ? foundBPE.getEps().toString() : "N/A",
+                        foundBPE.getPe() != null ? foundBPE.getPe().toString() : "N/A",  
+                        foundBPE.getPb() != null ? foundBPE.getPb().toString() : "N/A"   
+                    };
 
                     for (int i = 0; i < extendHeaderList.length; i++) {
                         if (eu.getRowIndex() == 1048575) {
@@ -126,19 +142,20 @@ public class ExportTransactionExcel {
                     latestDateFetchHolder[0] = entity.getFormatStringTradingDate();
                 }
                 ;
-                System.out.println("\nCurrent: " + j + "/" + ticketList.size());
+                System.out.println("Done: " + (j + 1) + "/" + ticketList.size());
                 // System.out.print("\033[H\033[2J");
                 System.out.flush();
                 lastestTickerFetchUtil.setAppendMode(true);
                 lastestTickerFetchUtil.writeContentToFile(symbol + "," + latestDateFetchHolder[0]);
             }
             eu.saveAndClose();
-            System.out.println("Done!");
+            System.out.println("\nDone fetching all!");
             listOfTickerUtil.close();
             lastestTickerFetchUtil.close();
         } catch (Exception e) {
             eu.saveAndClose();
-            System.out.println("Done!");
+            System.out.println(e.getMessage());
+            System.out.println("Error!");
             listOfTickerUtil.close();
             lastestTickerFetchUtil.close();
         }
@@ -168,11 +185,11 @@ public class ExportTransactionExcel {
                 result = String.valueOf(rsi);
                 dequeArray.pop();
             } else
-                result = "0";
+                result = "N/A";
             return result;
         } catch (Exception e) {
-            System.err.println("Error in RSI: " + e.getMessage());
-            return "0";
+            // System.err.println("Error in RSI: " + e.getMessage());
+            return "N/A";
         }
     }
 
@@ -225,12 +242,12 @@ public class ExportTransactionExcel {
                 result = String.valueOf((prevArray[0].subtract(prevArray[1])));
                 dequeArray.pop();
             } else {
-                result = "0";
+                result = "N/A";
             }
             return result;
         } catch (Exception e) {
-            System.err.println("Error in MACD: " + e.getMessage());
-            return "0";
+            // System.err.println("Error in MACD: " + e.getMessage());
+            return "N/A";
         }
     }
 
@@ -253,11 +270,11 @@ public class ExportTransactionExcel {
                 result = String.valueOf((dequeArray.stream().mapToInt(Integer::intValue).sum() / dayAmount));
                 dequeArray.pop();
             } else
-                result = "0";
+                result = "N/A";
             return result;
         } catch (Exception e) {
-            System.err.println("Error in " + type + ": " + e.getMessage());
-            return "0";
+            // System.err.println("Error in " + type + ": " + e.getMessage());
+            return "N/A";
         }
     }
 
@@ -282,18 +299,17 @@ public class ExportTransactionExcel {
 
             // It there is no data exist
             BusinessProfileEntity nullProfile = new BusinessProfileEntity();
-            nullProfile.setIssueShare(0L);
-            nullProfile.setEv(0L);
-            nullProfile.setPb(new BigDecimal(0));
-            nullProfile.setPe(new BigDecimal(0));
-            nullProfile.setEps(new BigDecimal(0));
+            nullProfile.setIssueShare(null);
+            nullProfile.setEv(null);
+            nullProfile.setPb(null);
+            nullProfile.setPe(null);
+            nullProfile.setEps(null);
 
             return nullProfile;
 
         } catch (Exception e) {
             System.err.println("Invalid date format: " + e.getMessage());
+            return null; // Return null if no match is found
         }
-
-        return null; // Return null if no match is found
     }
 }
