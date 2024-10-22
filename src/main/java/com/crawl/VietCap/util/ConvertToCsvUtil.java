@@ -19,7 +19,7 @@ public class ConvertToCsvUtil extends ExcelSheetHandler {
     private CSVPrinter csvPrinter;
     private Writer writer;
     private String excelFilePath = "src/main/resources/export_excel/";
-    private String csvFileName;
+    // private String csvFileName;
     private String pathTofile;
     private String[] baseHeadersList = new String[] {
             "Product_ID", "Report_Date", "Items_Name", "Items_Value",
@@ -120,7 +120,6 @@ public class ConvertToCsvUtil extends ExcelSheetHandler {
                  * String a = rowValues.get("A");
                  * String b = rowValues.get("B");
                  */
-
                 this.appendToCSV(rowValues);
             }
         } catch (Exception e) {

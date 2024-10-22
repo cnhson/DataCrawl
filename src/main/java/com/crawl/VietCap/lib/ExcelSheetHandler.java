@@ -126,7 +126,7 @@ public class ExcelSheetHandler extends DefaultHandler {
 
             sharedStringsTable = (SharedStringsTable) xssfReader.getSharedStringsTable();
 
-            // System.out.println("sharedStringsTable: " + sharedStringsTable.getUniqueCount());
+            System.out.println("sharedStringsTable: " + sharedStringsTable.getCount());
 
             Iterator<InputStream> sheets = xssfReader.getSheetsData();
 

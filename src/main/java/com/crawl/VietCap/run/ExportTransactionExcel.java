@@ -21,6 +21,9 @@ import com.crawl.VietCap.util.TextUtil;
 //`import com.foxthehuman.VietCapCrawl.controller.TransactionController;
 
 public class ExportTransactionExcel {
+    private static BigDecimal previousAverageGain = BigDecimal.ZERO;
+    private static BigDecimal previousAverageLoss = BigDecimal.ZERO;
+    private static Boolean isPreviousExist = false;
     public static void main(String[] args) throws InterruptedException {
         Integer fileNameIndex = 1;
         ExcelWriteUtil eu = new ExcelWriteUtil();
@@ -38,17 +41,17 @@ public class ExportTransactionExcel {
             Integer MACD_Days = 26;
 
             String[] extendHeaderList = new String[] { "Open_Price", "Close_Price",
-                    "Highest_Price", "Lowest_Price", "Total_Match_Volume", "Total_Match_Value",
-                    "Total_Value", "Total_Volume", "Average_Total_Value_10", "Average_Matching_Total_Value_10",
-                    "RSI_14", "MA_10", "MACD", "EV", "IssueShare", "EPS", "PE", "PB"
-            };
+            "Highest_Price", "Lowest_Price", "Total_Match_Volume", "Total_Match_Value",
+            "Total_Value", "Total_Volume", "Average_Total_Value_10", "Average_Matching_Total_Value_10",
+            "RSI_14", "Prev_AVG", "Prev_AVL" ,"MA_10" ,"MACD", "Prev_SMA12", "Prev_SMA26", "EV", "IssueShare", "EPS", "PE", "PB"
+    };
 
             String filename = "vietcap_";
             Integer pageNum = 1;
             Integer limit = 5000;
 
             // String startDate = "2000-01-01";
-            String startDate = "2024-08-01";
+            String startDate = "2024-10-20";
             String endDate = "2100-01-01";
             // Boolean continueFetch = true;
 
@@ -57,9 +60,10 @@ public class ExportTransactionExcel {
             eu.setFileName(filename + fileNameIndex);
 
             for (int j = 0; j < ticketList.size(); j++) {
-                Thread.sleep(500);
+                Thread.sleep(200);
                 String symbol = ticketList.get(j);
                 System.out.println("\nCurrent symbol: " + symbol);
+
                 List<TransactionEntity> transList = vct.crawlData(symbol, pageNum,
                         limit, startDate, endDate);
                 List<BusinessProfileEntity> businessProfileList = bpr.crawlData(symbol);
@@ -113,8 +117,12 @@ public class ExportTransactionExcel {
                         averageTotalVolumeValue,
                         averageTotalMatchVolumeValue, 
                         RSI_Value, 
+                        previousAverageGain != null ? previousAverageGain.toString() : "N/A",
+                        previousAverageLoss != null ? previousAverageLoss.toString() : "N/A",
                         MA_Value, 
-                        MACD_Value, 
+                        MACD_Value,
+                        prevSMA12 != null ? prevSMA12.toString() : "N/A",
+                        prevSMA26 != null ? prevSMA26.toString() : "N/A", 
                         foundBPE.getEv() != null ? foundBPE.getEv().toString() : "N/A",  
                         foundBPE.getIssueShare() != null ? foundBPE.getIssueShare().toString() : "N/A",  
                         foundBPE.getEps() != null ? foundBPE.getEps().toString() : "N/A",
@@ -123,7 +131,7 @@ public class ExportTransactionExcel {
                     };
 
                     for (int i = 0; i < extendHeaderList.length; i++) {
-                        if (eu.getRowIndex() == 1048575) {
+                        if (eu.getRowIndex() < (1048576 - extendValueList.length + 1)) {
                             // Save and close the current file
                             eu.saveAndClose();
                             eu.createWorkSheet();
@@ -163,32 +171,58 @@ public class ExportTransactionExcel {
 
     private static String calculateRSI(Deque<Integer> dequeArray, Integer dayAmount, Integer priceChange) {
         try {
-            String result;
+            String result = "N/A";
             dequeArray.add(priceChange);
             if (dequeArray.size() == dayAmount) {
 
+                BigDecimal averageGain = new BigDecimal(0);
+                BigDecimal averageLoss = new BigDecimal(0);
+                if(isPreviousExist)
+                {
+                Integer currentGain = priceChange > 0 ? priceChange : 0;
+                Integer currentLoss = priceChange < 0 ? -priceChange : 0;
+
+                // Calculate average gain/loss using exponential smoothing
+                averageGain = (previousAverageGain.multiply(BigDecimal.valueOf(dayAmount - 1))
+                        .add(BigDecimal.valueOf(currentGain))).divide(BigDecimal.valueOf(dayAmount), 10, RoundingMode.HALF_UP);
+
+                averageLoss = (previousAverageLoss.multiply(BigDecimal.valueOf(dayAmount - 1))
+                        .add(BigDecimal.valueOf(currentLoss))).divide(BigDecimal.valueOf(dayAmount), 10, RoundingMode.HALF_UP);
+                }
+
+                else {
                 BigDecimal totalGain = BigDecimal.valueOf(
                         dequeArray.stream().filter(value -> value > 0).mapToInt(Integer::intValue).sum());
-
-                BigDecimal averageGain = totalGain.divide(BigDecimal.valueOf(dayAmount), 10, RoundingMode.HALF_UP);
 
                 BigDecimal totalLoss = BigDecimal.valueOf(
                         dequeArray.stream().filter(value -> value < 0).mapToInt(Integer::intValue).sum()).abs();
 
-                BigDecimal averageLoss = totalLoss.divide(BigDecimal.valueOf(dayAmount), 10, RoundingMode.HALF_UP);
+                averageGain = totalGain.divide(BigDecimal.valueOf(dayAmount), 10, RoundingMode.HALF_UP);
+
+                averageLoss = totalLoss.divide(BigDecimal.valueOf(dayAmount), 10, RoundingMode.HALF_UP);
+                isPreviousExist = true;
+                }
 
                 BigDecimal rs = averageGain.divide(averageLoss, 10, RoundingMode.HALF_UP);
 
                 BigDecimal rsi = BigDecimal.valueOf(100)
                         .subtract(BigDecimal.valueOf(100).divide(BigDecimal.ONE.add(rs), 10, RoundingMode.HALF_UP));
 
-                result = String.valueOf(rsi);
+                if(rsi.compareTo(new BigDecimal(70)) < 0)
+                {
+                    result = String.valueOf(rsi);
+                    previousAverageGain = averageGain;
+                    previousAverageLoss = averageLoss;
+                }
+                else
+                    isPreviousExist = false;
+
+              
                 dequeArray.pop();
-            } else
-                result = "N/A";
+            } 
             return result;
         } catch (Exception e) {
-            // System.err.println("Error in RSI: " + e.getMessage());
+            System.err.println("Error in RSI: " + e.getMessage());
             return "N/A";
         }
     }
