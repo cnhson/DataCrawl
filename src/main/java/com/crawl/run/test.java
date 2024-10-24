@@ -1,6 +1,8 @@
 package com.crawl.run;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.crawl.controller.CafeFTransactionRequest;
@@ -13,7 +15,13 @@ public class test {
         String projectDir = System.getProperty("user.dir");
 
         // Print the project directory
-        System.out.println("Current project directory: " + projectDir+"\\src\\main\\java\\com\\crawl\\");
+        System.out.println("Current project directory: " + projectDir + "\\src\\main\\java\\com\\crawl\\");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        Long past = LocalDate.parse("10/23/2024", formatter).toEpochDay();
+        Long now = LocalDate.now().toEpochDay();
+        System.out.println(past + " " + now);
+        System.out.println(past.compareTo(now));
         // String symbol = "VNM";
         // String startDate = "2024-07-01";
         // String endDate = "2024-07-20";

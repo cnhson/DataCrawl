@@ -3,6 +3,7 @@ package com.crawl.executor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -14,11 +15,8 @@ import java.util.stream.Collectors;
 
 import com.crawl.controller.CafeFTransactionRequest;
 import com.crawl.controller.VietCapBusinessProfileRequest;
-import com.crawl.controller.VietCapTransactionRequest;
 import com.crawl.model.CafeFTransactionEntity;
 import com.crawl.model.VietCapBusinessProfileEntity;
-import com.crawl.model.VietCapTransactionEntity;
-import com.crawl.util.ExcelWriteUtil;
 import com.crawl.util.TextUtil;
 import com.crawl.util.WriteCsvUtil;
 
@@ -42,7 +40,8 @@ public class CafeFExportTransactionCsv {
         TextUtil lastestTickerFetchUtil = new TextUtil("src/main/resources/lastestTickerFetchList.txt");
         TextUtil listOfTickerUtil = new TextUtil("src/main/resources/tickerList.txt");
         try {
-
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            Boolean isNotLatest = false;
             Integer averageTotalVolumeDays = 10;
             Integer RSI_Days = 14;
             Integer MA_Days = 10;
@@ -60,19 +59,25 @@ public class CafeFExportTransactionCsv {
 
             if (exportPath == null || exportPath.isEmpty()) {
                 String projectDir = System.getProperty("user.dir");
-                exportPath = projectDir + "\\src\\main\\java\\resources\\export_csv\\";
+                exportPath = projectDir + "\\src\\main\\resources\\export_csv\\";
             }
 
             //
             // String startDate = "2000-01-01";
             // String endDate = "2100-01-01";
-            String currentDateTime = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+            String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
             if (startDate == null || startDate.isEmpty()) {
                 throw new IllegalArgumentException("Start date is required");
             }
 
             if (endDate == null || endDate.isEmpty()) {
                 throw new IllegalArgumentException("End date is required");
+            }
+            // Handle if input enddate is not latest according to current date
+            Long inputEndDate = LocalDate.parse(endDate, formatter).toEpochDay();
+            Long currentDate = LocalDate.now().toEpochDay();
+            if (inputEndDate.compareTo(currentDate) < 0) {
+                isNotLatest = true;
             }
             //
             if (symbol != null && !symbol.isEmpty()) {
@@ -85,14 +90,22 @@ public class CafeFExportTransactionCsv {
             }
             wcu.setFile(exportPath, filename, baseHeadersList);
 
+            // for (int j = startIndex; j < startIndex + 1; j++) {
             for (int j = startIndex; j < ticketList.size(); j++) {
+
                 Thread.sleep(100);
                 String currentSymbol = ticketList.get(j);
-                System.out.println("\nCurrent symbol: " + symbol);
+                System.out.println("\nCurrent symbol: " + currentSymbol);
 
                 List<CafeFTransactionEntity> transList = cft.crawlData(currentSymbol, startDate, endDate, pageNum,
                         limit);
-                List<VietCapBusinessProfileEntity> businessProfileList = bpr.crawlData(symbol);
+                List<VietCapBusinessProfileEntity> businessProfileList = bpr.crawlData(currentSymbol);
+
+                // If not fetching to the lastest date, then delete first element because CafeF
+                // always return the lastest record no matter
+                if (isNotLatest == true) {
+                    transList.remove(0);
+                }
 
                 // Revert the list (from oldest to lastest)
                 Collections.reverse(businessProfileList);
@@ -136,7 +149,7 @@ public class CafeFExportTransactionCsv {
 
                     for (int i = 0; i < extendHeaderList.length; i++) {
 
-                        wcu.writeLine(new String[] { symbol, entity.getTradingDate(), extendHeaderList[i],
+                        wcu.writeLine(new String[] { currentSymbol, entity.getTradingDate(), extendHeaderList[i],
                                 extendValueList[i].toString() });
                     }
 
@@ -146,7 +159,7 @@ public class CafeFExportTransactionCsv {
                 System.out.println("Done: " + (j + 1) + "/" + ticketList.size());
                 System.out.flush();
                 lastestTickerFetchUtil.setAppendMode(true);
-                lastestTickerFetchUtil.writeContentToFile(symbol + "," + latestDateFetchHolder[0]);
+                lastestTickerFetchUtil.writeContentToFile(currentSymbol + "," + latestDateFetchHolder[0]);
             }
             wcu.closeCSV();
             System.out.println("\nDone fetching all!");

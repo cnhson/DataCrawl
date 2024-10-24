@@ -10,7 +10,7 @@ public class Main {
         String endDate = "2024-10-23";
         String symbol = "";
         String exportPath = "";
-        Integer startIndex = 666;
+        Integer startIndex = 665;
         CafeFExportTransactionCsv cafeETC = new CafeFExportTransactionCsv();
         cafeETC.execute(startDate, endDate, symbol, exportPath, startIndex);
     }
