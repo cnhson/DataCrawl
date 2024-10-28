@@ -2,7 +2,7 @@ package com.crawl.run;
 
 import com.crawl.executor.CafeFExportTransactionCsv;
 
-public class Main {
+public class TransactionHistory {
 
     public static void main(String[] args) throws Exception {
 

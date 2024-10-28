@@ -12,7 +12,6 @@ public class ReadCsvUtil {
     String filename;
     String path;
     FileReader fileReader;
-    Boolean isStop = false;
 
     public ReadCsvUtil(String path, String filename) {
         try {
@@ -29,15 +28,9 @@ public class ReadCsvUtil {
                 while ((row = reader.readNext()) != null) {
                     innerFunction.accept(row);
                 }
-                isStop = true;
-
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
-    }
-
-    public Boolean isStopCheck() {
-        return this.isStop;
     }
 }
