@@ -4,9 +4,9 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 
-import com.crawl.bodyParam.VietCapBusinessProfileBody;
+import com.crawl.bodyParam.VietCapFinancalAnalystBody;
 import com.crawl.endpoints.HTTPRequest;
-import com.crawl.model.VietCapBusinessProfileEntity;
+import com.crawl.model.VietCapFinancalAnalystEntity;
 import com.crawl.model.VietCapTransactionEntity;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -16,16 +16,16 @@ import com.google.gson.reflect.TypeToken;
 
 import io.restassured.response.Response;
 
-public class VietCapBusinessProfileRequest {
+public class VietCapFinancalAnalystRequest {
 
-    public List<VietCapBusinessProfileEntity> crawlData(String inputSymbol) {
+    public List<VietCapFinancalAnalystEntity> crawlData(String inputSymbol) {
         Response response = null;
         try {
             Gson gson = new Gson();
             Type gsonType = new TypeToken<HashMap<String, Object>>() {
             }.getType();
 
-            String bodyToString = gson.toJson(VietCapBusinessProfileBody.get(inputSymbol), gsonType);
+            String bodyToString = gson.toJson(VietCapFinancalAnalystBody.get(inputSymbol), gsonType);
             HTTPRequest request = new HTTPRequest();
             request.setPayLoad(bodyToString);
             request.setRequestUrl("https://api.vietcap.com.vn/data-mt/graphql");
@@ -35,17 +35,17 @@ public class VietCapBusinessProfileRequest {
             JsonElement transDataArray = jsonObject.get("data").getAsJsonObject().get("CompanyFinancialRatio")
                     .getAsJsonObject().get("ratio");
 
-            Type businessProfileListType = new TypeToken<List<VietCapBusinessProfileEntity>>() {
+            Type FinancalAnalystListType = new TypeToken<List<VietCapFinancalAnalystEntity>>() {
             }.getType();
 
-            List<VietCapBusinessProfileEntity> businessProfileList = gson.fromJson(transDataArray,
-                    businessProfileListType);
+            List<VietCapFinancalAnalystEntity> FinancalAnalystList = gson.fromJson(transDataArray,
+                    FinancalAnalystListType);
 
-            return businessProfileList;
+            return FinancalAnalystList;
         } catch (Exception e) {
-            System.err.println("[BusinessProfileRequest] Current symbol:" + inputSymbol);
-            System.err.println("[BusinessProfileRequest] Error: " + e.getMessage());
-            System.err.println("[BusinessProfileRequest] Response: " + response.asString());
+            System.err.println("[FinancalAnalystRequest] Current symbol:" + inputSymbol);
+            System.err.println("[FinancalAnalystRequest] Error: " + e.getMessage());
+            System.err.println("[FinancalAnalystRequest] Response: " + response.asString());
             return null;
         }
     }

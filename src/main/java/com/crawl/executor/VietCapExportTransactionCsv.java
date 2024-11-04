@@ -12,9 +12,9 @@ import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.crawl.controller.VietCapBusinessProfileRequest;
+import com.crawl.controller.VietCapFinancalAnalystRequest;
 import com.crawl.controller.VietCapTransactionRequest;
-import com.crawl.model.VietCapBusinessProfileEntity;
+import com.crawl.model.VietCapFinancalAnalystEntity;
 import com.crawl.model.VietCapTransactionEntity;
 import com.crawl.util.ExcelWriteUtil;
 import com.crawl.util.TextUtil;
@@ -31,7 +31,7 @@ public class VietCapExportTransactionCsv {
     public static void main(String[] args) throws InterruptedException {
         WriteCsvUtil wcu = new WriteCsvUtil();
         VietCapTransactionRequest vct = new VietCapTransactionRequest();
-        VietCapBusinessProfileRequest bpr = new VietCapBusinessProfileRequest();
+        VietCapFinancalAnalystRequest bpr = new VietCapFinancalAnalystRequest();
         TextUtil lastestTickerFetchUtil = new TextUtil("src/main/resources/lastestTickerFetchList.txt");
         TextUtil listOfTickerUtil = new TextUtil("src/main/resources/tickerList.txt");
         try {
@@ -47,11 +47,11 @@ public class VietCapExportTransactionCsv {
             Boolean isSingleFetch;
             Integer pageNum = 1;
             Integer limit = 5000;
-            String[] baseHeadersList = new String[] { "Product_ID", "Report_Date", "Items_Name", "Items_Value", };
+            String[] baseHeadersList = new String[] { "product_id", "report_time", "items_name", "items_value", };
             String[] extendHeaderList = new String[] { "Open_Price", "Close_Price", "Highest_Price", "Lowest_Price",
                     "Total_Match_Volume", "Total_Match_Value", "Total_Value", "Total_Volume", "Average_Total_Value_10",
                     "Average_Matching_Total_Value_10", "RSI_14", "Prev_AVG", "Prev_AVL", "MA_10", "MACD", "Prev_SMA12",
-                    "Prev_SMA26", "EV", "IssueShare", "EPS", "PE", "PB" };
+                    "Prev_SMA26" };
             String path = "D:\\GithubProjects\\DataCrawl\\src\\main\\resources\\";
 
             //
@@ -75,10 +75,7 @@ public class VietCapExportTransactionCsv {
                 System.out.println("\nCurrent symbol: " + symbol);
 
                 List<VietCapTransactionEntity> transList = vct.crawlData(symbol, pageNum, limit, startDate, endDate);
-                List<VietCapBusinessProfileEntity> businessProfileList = bpr.crawlData(symbol);
 
-                // Revert the list (from oldest to lastest)
-                Collections.reverse(businessProfileList);
                 // Ascending sort on datetime
                 transList.sort(Comparator.comparingLong(VietCapTransactionEntity::getLongTradingDate));
 
@@ -90,9 +87,6 @@ public class VietCapExportTransactionCsv {
                 final String[] latestDateFetchHolder = { null };
 
                 for (VietCapTransactionEntity entity : transList) {
-
-                    VietCapBusinessProfileEntity foundBPE = findProfileByDate(businessProfileList,
-                            entity.getFormatStringTradingDate());
 
                     String averageTotalVolumeValue = calculateATV(averageTotalVolumeArray, averageTotalVolumeDays,
                             entity.getTotalVolume());
@@ -107,20 +101,14 @@ public class VietCapExportTransactionCsv {
                             entity.getHighestPrice(), entity.getLowestPrice(), entity.getTotalMatchVolume(),
                             entity.getTotalMatchValue(), entity.getTotalValue(), entity.getTotalVolume(),
                             averageTotalVolumeValue, averageTotalMatchVolumeValue, RSI_Value,
-                            prevAverageGain.compareTo(new BigDecimal(0)) != 0 ? prevAverageGain.toString() : "N/A",
-                            prevAverageLoss.compareTo(new BigDecimal(0)) != 0 ? prevAverageLoss.toString() : "N/A",
-                            MA_Value, MACD_Value,
-                            prevEMA12.compareTo(new BigDecimal(0)) != 0 ? prevEMA12.toString() : "N/A",
-                            prevEMA26.compareTo(new BigDecimal(0)) != 0 ? prevEMA26.toString() : "N/A",
-                            foundBPE.getEv() != null ? foundBPE.getEv().toString() : "N/A",
-                            foundBPE.getIssueShare() != null ? foundBPE.getIssueShare().toString() : "N/A",
-                            foundBPE.getEps() != null ? foundBPE.getEps().toString() : "N/A",
-                            foundBPE.getPe() != null ? foundBPE.getPe().toString() : "N/A",
-                            foundBPE.getPb() != null ? foundBPE.getPb().toString() : "N/A" };
+                            prevAverageGain.compareTo(new BigDecimal(0)) != 0 ? prevAverageGain : "",
+                            prevAverageLoss.compareTo(new BigDecimal(0)) != 0 ? prevAverageLoss : "", MA_Value,
+                            MACD_Value, prevEMA12.compareTo(new BigDecimal(0)) != 0 ? prevEMA12.toString() : "",
+                            prevEMA26.compareTo(new BigDecimal(0)) != 0 ? prevEMA26.toString() : "" };
 
                     for (int i = 0; i < extendHeaderList.length; i++) {
-                        wcu.writeLine(new String[] { symbol, entity.getFormatStringTradingDate(), extendHeaderList[i],
-                                extendValueList[i].toString() });
+                        wcu.writeLine(new Object[] { symbol, entity.getFormatStringTradingDate(), extendHeaderList[i],
+                                extendValueList[i] });
                     }
 
                     latestDateFetchHolder[0] = entity.getFormatStringTradingDate();
@@ -279,8 +267,8 @@ public class VietCapExportTransactionCsv {
         }
     }
 
-    private static VietCapBusinessProfileEntity findProfileByDate(
-            List<VietCapBusinessProfileEntity> businessProfileArray, String dateString) {
+    private static VietCapFinancalAnalystEntity findProfileByDate(
+            List<VietCapFinancalAnalystEntity> FinancalAnalystArray, String dateString) {
         try {
             // Parse the input date string to extract the year and month
 
@@ -291,15 +279,15 @@ public class VietCapExportTransactionCsv {
             int month = date.getMonthValue();
             int lengthReport = (month - 1) / 3 + 1; // Calculate the quarter
 
-            // Find the matching BusinessProfileEntity in the list
-            for (VietCapBusinessProfileEntity profile : businessProfileArray) {
+            // Find the matching FinancalAnalystEntity in the list
+            for (VietCapFinancalAnalystEntity profile : FinancalAnalystArray) {
                 if (profile.getYearReport() == year && profile.getLengthReport() == lengthReport) {
                     return profile;
                 }
             }
 
             // It there is no data exist
-            VietCapBusinessProfileEntity nullProfile = new VietCapBusinessProfileEntity();
+            VietCapFinancalAnalystEntity nullProfile = new VietCapFinancalAnalystEntity();
             nullProfile.setIssueShare(null);
             nullProfile.setEv(null);
             nullProfile.setPb(null);

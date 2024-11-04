@@ -45,16 +45,16 @@ public class CafeFTransactionRequest {
             JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
             JsonElement transDataArray = jsonObject.get("Data").getAsJsonObject().get("Data");
 
-            Type businessProfileListType = new TypeToken<List<CafeFTransactionEntity>>() {
+            Type FinancalAnalystListType = new TypeToken<List<CafeFTransactionEntity>>() {
             }.getType();
 
-            List<CafeFTransactionEntity> businessProfileList = gson.fromJson(transDataArray, businessProfileListType);
+            List<CafeFTransactionEntity> FinancalAnalystList = gson.fromJson(transDataArray, FinancalAnalystListType);
 
-            return businessProfileList;
+            return FinancalAnalystList;
         } catch (Exception e) {
-            System.err.println("[BusinessProfileRequest] Current symbol:" + inputSymbol);
-            System.err.println("[BusinessProfileRequest] Error: " + e.getMessage());
-            System.err.println("[BusinessProfileRequest] Response: " + response.asString());
+            System.err.println("[FinancalAnalystRequest] Current symbol:" + inputSymbol);
+            System.err.println("[FinancalAnalystRequest] Error: " + e.getMessage());
+            System.err.println("[FinancalAnalystRequest] Response: " + response.asString());
             return null;
         }
     }

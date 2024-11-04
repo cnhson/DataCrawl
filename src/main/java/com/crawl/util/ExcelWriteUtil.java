@@ -24,7 +24,7 @@ public class ExcelWriteUtil {
     private Row row;
     private Integer rowIndex = 1;
     private FileOutputStream fileOut;
-    private String[] baseHeadersList = new String[] { "Product_ID", "Report_Date", "Items_Name", "Items_Value", };
+    private String[] baseHeadersList = new String[] { "product_id", "report_time", "items_name", "items_value", };
 
     private String PUBLIC_RESOURCE_PATH = "src/main/resources/export_excel/";
 

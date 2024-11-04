@@ -4,14 +4,10 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 
-import com.crawl.bodyParam.VietCapBusinessProfileBody;
 import com.crawl.bodyParam.VietCapICBBody;
 import com.crawl.endpoints.HTTPRequest;
-import com.crawl.model.VietCapBusinessProfileEntity;
 import com.crawl.model.VietCapICBEntity;
-import com.crawl.model.VietCapTickerEntity;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

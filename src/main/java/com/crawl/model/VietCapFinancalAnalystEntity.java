@@ -2,7 +2,7 @@ package com.crawl.model;
 
 import java.math.BigDecimal;
 
-public class VietCapBusinessProfileEntity {
+public class VietCapFinancalAnalystEntity {
 
     private Integer yearReport;
     private Integer lengthReport;
@@ -14,7 +14,7 @@ public class VietCapBusinessProfileEntity {
     private BigDecimal pe;
     private BigDecimal pb;
 
-    public VietCapBusinessProfileEntity() {
+    public VietCapFinancalAnalystEntity() {
 
     }
 

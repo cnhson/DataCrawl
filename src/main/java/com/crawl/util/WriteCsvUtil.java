@@ -1,43 +1,46 @@
 package com.crawl.util;
 
 import java.io.FileWriter;
-
-import com.opencsv.CSVWriter;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import java.io.IOException;
 
 public class WriteCsvUtil {
 
-    private CSVWriter writer;
+    private CSVPrinter printer;
 
     public WriteCsvUtil() {
-
+        // No initialization required here.
     }
 
     public void setFile(String path, String filename, String[] headers) {
         try {
-            writer = new CSVWriter(new FileWriter(path + filename));
-            writeLine(headers);
-            writer.flush();
-        } catch (Exception e) {
+            // Initialize the CSVPrinter with a format that disables quotes
+            printer = new CSVPrinter(new FileWriter(path + filename),
+                    CSVFormat.POSTGRESQL_CSV.builder().setQuote(null).build());
+        } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
         }
     }
 
-    public void writeLine(String[] record) {
-        if (writer != null)
+    public void writeLine(Object[] record) {
+        if (printer != null) {
             try {
-                writer.writeNext(record);
-                writer.flush();
-            } catch (Exception e) {
+                printer.printRecord(record);
+                printer.flush();
+            } catch (IOException e) {
                 System.err.println(e.getMessage());
             }
+        }
     }
 
     public void closeCSV() {
-        if (writer != null)
+        if (printer != null) {
             try {
-                writer.close();
-            } catch (Exception e) {
+                printer.close();
+            } catch (IOException e) {
                 System.err.println(e.getMessage());
             }
+        }
     }
 }

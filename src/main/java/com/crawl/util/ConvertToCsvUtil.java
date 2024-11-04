@@ -21,7 +21,7 @@ public class ConvertToCsvUtil extends ExcelSheetHandler {
     private String excelFilePath = "src/main/resources/export_excel/";
     // private String csvFileName;
     private String pathTofile;
-    private String[] baseHeadersList = new String[] { "Product_ID", "Report_Date", "Items_Name", "Items_Value", };
+    private String[] baseHeadersList = new String[] { "product_id", "report_time", "items_name", "items_value", };
 
     public ConvertToCsvUtil() {
     }
@@ -40,8 +40,8 @@ public class ConvertToCsvUtil extends ExcelSheetHandler {
         if (csvPrinter != null) {
             csvPrinter.printRecord(rowValues.get("A"), // Stock_ID
                     rowValues.get("B"), // Date
-                    rowValues.get("C"), // Items_Name
-                    rowValues.get("D"));// Items_Value);
+                    rowValues.get("C"), // items_name
+                    rowValues.get("D"));// items_value);
         } else {
             throw new IllegalStateException("CSVPrinter is not initialized. Call createCSV() first.");
         }

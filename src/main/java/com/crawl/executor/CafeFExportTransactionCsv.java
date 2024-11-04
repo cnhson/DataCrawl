@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.crawl.controller.CafeFTransactionRequest;
-import com.crawl.controller.VietCapBusinessProfileRequest;
+import com.crawl.controller.VietCapFinancalAnalystRequest;
 import com.crawl.model.CafeFTransactionEntity;
-import com.crawl.model.VietCapBusinessProfileEntity;
+import com.crawl.model.VietCapFinancalAnalystEntity;
 import com.crawl.util.TextUtil;
 import com.crawl.util.WriteCsvUtil;
 
@@ -36,7 +36,7 @@ public class CafeFExportTransactionCsv {
             throws InterruptedException {
         WriteCsvUtil wcu = new WriteCsvUtil();
         CafeFTransactionRequest cft = new CafeFTransactionRequest();
-        VietCapBusinessProfileRequest bpr = new VietCapBusinessProfileRequest();
+        VietCapFinancalAnalystRequest bpr = new VietCapFinancalAnalystRequest();
         TextUtil lastestTickerFetchUtil = new TextUtil("src/main/resources/lastestTickerFetchList.txt");
         TextUtil listOfTickerUtil = new TextUtil("src/main/resources/tickerList.txt");
         try {
@@ -51,7 +51,7 @@ public class CafeFExportTransactionCsv {
             String filename;
             Integer pageNum = 1;
             Integer limit = 6000;
-            String[] baseHeadersList = new String[] { "Product_ID", "Report_Date", "Items_Name", "Items_Value", };
+            String[] baseHeadersList = new String[] { "product_id", "report_time", "items_name", "items_value", };
             String[] extendHeaderList = new String[] { "Open_Price", "Close_Price", "Highest_Price", "Lowest_Price",
                     "Total_Match_Volume", "Total_Match_Value", "Total_Value", "Total_Volume", "Average_Total_Value_10",
                     "Average_Matching_Total_Value_10", "RSI_14", "Prev_AVG", "Prev_AVL", "MA_10", "MACD", "Prev_SMA12",
@@ -99,7 +99,7 @@ public class CafeFExportTransactionCsv {
 
                 List<CafeFTransactionEntity> transList = cft.crawlData(currentSymbol, startDate, endDate, pageNum,
                         limit);
-                List<VietCapBusinessProfileEntity> businessProfileList = bpr.crawlData(currentSymbol);
+                List<VietCapFinancalAnalystEntity> FinancalAnalystList = bpr.crawlData(currentSymbol);
 
                 // If not fetching to the lastest date, then delete first element because CafeF
                 // always return the lastest record no matter
@@ -108,7 +108,7 @@ public class CafeFExportTransactionCsv {
                 }
 
                 // Revert the list (from oldest to lastest)
-                Collections.reverse(businessProfileList);
+                Collections.reverse(FinancalAnalystList);
                 // Ascending sort on datetime (from oldest to lastest)
                 transList.sort(Comparator.comparing(CafeFTransactionEntity::getTradingLocalDate));
 
@@ -121,7 +121,7 @@ public class CafeFExportTransactionCsv {
 
                 for (CafeFTransactionEntity entity : transList) {
 
-                    VietCapBusinessProfileEntity foundBPE = findProfileByDate(businessProfileList,
+                    VietCapFinancalAnalystEntity foundBPE = findProfileByDate(FinancalAnalystList,
                             entity.getTradingDate());
 
                     String averageTotalVolumeValue = calculateATV(averageTotalVolumeArray, averageTotalVolumeDays,
@@ -306,8 +306,8 @@ public class CafeFExportTransactionCsv {
         }
     }
 
-    private static VietCapBusinessProfileEntity findProfileByDate(
-            List<VietCapBusinessProfileEntity> businessProfileArray, String dateString) {
+    private static VietCapFinancalAnalystEntity findProfileByDate(
+            List<VietCapFinancalAnalystEntity> FinancalAnalystArray, String dateString) {
         try {
             // Parse the input date string to extract the year and month
 
@@ -318,15 +318,15 @@ public class CafeFExportTransactionCsv {
             int month = date.getMonthValue();
             int lengthReport = (month - 1) / 3 + 1; // Calculate the quarter
 
-            // Find the matching BusinessProfileEntity in the list
-            for (VietCapBusinessProfileEntity profile : businessProfileArray) {
+            // Find the matching FinancalAnalystEntity in the list
+            for (VietCapFinancalAnalystEntity profile : FinancalAnalystArray) {
                 if (profile.getYearReport() == year && profile.getLengthReport() == lengthReport) {
                     return profile;
                 }
             }
 
             // It there is no data exist
-            VietCapBusinessProfileEntity nullProfile = new VietCapBusinessProfileEntity();
+            VietCapFinancalAnalystEntity nullProfile = new VietCapFinancalAnalystEntity();
             nullProfile.setIssueShare(null);
             nullProfile.setEv(null);
             nullProfile.setPb(null);

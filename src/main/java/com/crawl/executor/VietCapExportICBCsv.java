@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.crawl.controller.CafeFTransactionRequest;
-import com.crawl.controller.VietCapBusinessProfileRequest;
+import com.crawl.controller.VietCapFinancalAnalystRequest;
 import com.crawl.controller.VietCapICBRequest;
 import com.crawl.model.CafeFTransactionEntity;
-import com.crawl.model.VietCapBusinessProfileEntity;
+import com.crawl.model.VietCapFinancalAnalystEntity;
 import com.crawl.model.VietCapICBEntity;
 import com.crawl.util.TextUtil;
 import com.crawl.util.WriteCsvUtil;
@@ -42,7 +42,7 @@ public class VietCapExportICBCsv {
             String currentDate = LocalDate.now().format(formatter);
             String filename;
 
-            String[] baseHeadersList = new String[] { "ICB_ID", "Report_Date", "Items_Name", "Items_Value", };
+            String[] baseHeadersList = new String[] { "ICB_ID", "report_time", "items_name", "items_value", };
             String[] extendHeaderList = new String[] { "ICBName", "PercentPriceChange1Day", "PercentPriceChange1Week",
                     "PercentPriceChange1Month", "Pe", "Pb", "RevenueGrowth", "AssetGrowth", "OwnerEquityGrowth", "Roa",
                     "Roe", "NetProfitMargin", "GrossProfitMargin", "DebtRatio", "Ev" };

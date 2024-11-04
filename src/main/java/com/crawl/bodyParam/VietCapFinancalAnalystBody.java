@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.google.gson.JsonParser;
 
-public class VietCapBusinessProfileBody {
+public class VietCapFinancalAnalystBody {
 
     private static String query = "fragment Ratios on CompanyFinancialRatio {\r\n" + //
             "    yearReport\r\n" + //
@@ -37,7 +37,7 @@ public class VietCapBusinessProfileBody {
         } catch (
 
         Exception e) {
-            System.err.println("Error in BusinessProfileBody param: " + e.getMessage());
+            System.err.println("Error in FinancalAnalystBody param: " + e.getMessage());
             return null;
         }
     }
