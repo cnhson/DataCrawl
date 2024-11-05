@@ -7,23 +7,30 @@ import com.google.gson.JsonParser;
 
 public class VietCapFinancalAnalystBody {
 
-    private static String query = "fragment Ratios on CompanyFinancialRatio {\r\n" + //
-            "    yearReport\r\n" + //
-            "    lengthReport\r\n" + //
-            "    ev\r\n" + //
-            "    issueShare\r\n" + //
-            "    eps\r\n" + //
-            "    pe\r\n" + //
-            "    pb\r\n" + //
-            "}\r\n" + //
-            "\r\n" + //
-            "query Query($ticker: String!, $period: String!) {\r\n" + //
-            "    CompanyFinancialRatio(ticker: $ticker, period: $period) {\r\n" + //
-            "    ratio {\r\n" + //
-            "      ...Ratios\r\n" + //
-            "    }\r\n" + //
-            "  }\r\n" + //
-            "}\r\n";
+    private static String query = "fragment Ratios on CompanyFinancialRatio {\n" + //
+            "   yearReport\n" + //
+            "   lengthReport\n" + //
+            "   revenue\n" + //
+            "   revenueGrowth\n" + //
+            "   netProfit\n" + //
+            "   netProfitGrowth\n" + //
+            "   roe\n" + //
+            "   roic\n" + //
+            "   roa\n" + //
+            "   ev\n" + //
+            "   issueShare\n" + //
+            "   eps\n" + //
+            "   pe\n" + //
+            "   pb\n" + //
+            "   ebit\n" + //
+            "   }\n" + //
+            "   query Query($ticker: String!, $period: String!) {\n" + //
+            "    CompanyFinancialRatio(ticker: $ticker, period: $period) {\n" + //
+            "    ratio {\n" + //
+            "      ...Ratios\n" + //
+            "           }\n" + //
+            "       }\n" + //
+            "   }\n";
 
     public static Map<String, Object> get(String inputSymbol) {
         // Default period: Q

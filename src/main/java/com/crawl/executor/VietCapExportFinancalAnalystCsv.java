@@ -20,12 +20,13 @@ public class VietCapExportFinancalAnalystCsv {
         try {
 
             List<String> ticketList;
-            String path = "D:\\GithubProjects\\DataCrawl\\src\\main\\resources\\";
+            String path = "D:\\GithubProjects\\DataCrawl\\src\\main\\resources\\export_csv\\";
             String filename;
             Boolean isSingleFetch;
             String[] baseHeadersList = new String[] { "product_id", "report_length", "report_year", "items_name",
                     "items_value", };
-            String[] extendHeaderList = new String[] { "EV", "IssueShare", "EPS", "PE", "PB" };
+            String[] extendHeaderList = new String[] { "Revenue", "RevenueGrowth", "NetProfit", "NetProfitGrowth",
+                    "ROE", "ROIC", "ROA", "EV", "IssueShare", "EPS", "PE", "PB", "Ebit" };
             //
             isSingleFetch = false;
             //
@@ -45,8 +46,10 @@ public class VietCapExportFinancalAnalystCsv {
                 // Revert the list (from oldest to lastest)
                 Collections.reverse(FinancalAnalystList);
                 for (VietCapFinancalAnalystEntity entity : FinancalAnalystList) {
-                    Object[] extendValueList = new Object[] { entity.getEv(), entity.getIssueShare(), entity.getEps(),
-                            entity.getPe(), entity.getPb() };
+                    Object[] extendValueList = new Object[] { entity.getRevenue(), entity.getRevenueGrowth(),
+                            entity.getNetProfit(), entity.getNetProfitGrowth(), entity.getRoe(), entity.getRoic(),
+                            entity.getRoa(), entity.getEv(), entity.getIssueShare(), entity.getEps(), entity.getPe(),
+                            entity.getPb(), entity.getEbit() };
                     for (int i = 0; i < extendHeaderList.length; i++) {
                         wcu.writeLine(new Object[] { symbol, entity.getLengthReport(), entity.getYearReport(),
                                 extendHeaderList[i], extendValueList[i] });

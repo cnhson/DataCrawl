@@ -38,11 +38,11 @@ public class VietCapExportICBCsv {
         // TextUtil listOfTickerUtil = new
         // TextUtil("src/main/resources/tickerList.txt");
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             String currentDate = LocalDate.now().format(formatter);
             String filename;
 
-            String[] baseHeadersList = new String[] { "ICB_ID", "report_time", "items_name", "items_value", };
+            String[] baseHeadersList = new String[] { "product_id", "items_name", "items_value", "fetch_time" };
             String[] extendHeaderList = new String[] { "ICBName", "PercentPriceChange1Day", "PercentPriceChange1Week",
                     "PercentPriceChange1Month", "Pe", "Pb", "RevenueGrowth", "AssetGrowth", "OwnerEquityGrowth", "Roa",
                     "Roe", "NetProfitMargin", "GrossProfitMargin", "DebtRatio", "Ev" };
@@ -50,9 +50,9 @@ public class VietCapExportICBCsv {
             String projectDir = System.getProperty("user.dir");
             String exportPath = projectDir + "\\src\\main\\resources\\export_csv\\";
 
-            String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+            String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-            filename = currentDateTime + "_ICB.csv";
+            filename = currentDate + "_ICB.csv";
 
             wcu.setFile(exportPath, filename, baseHeadersList);
 
@@ -62,8 +62,6 @@ public class VietCapExportICBCsv {
 
             for (VietCapICBEntity entity : icbList) {
 
-                String currentICB = entity.getNameAsCode();
-
                 Object[] extendValueList = new Object[] { entity.getName(), entity.getPercentPriceChange1Day(),
                         entity.getPercentPriceChange1Week(), entity.getPercentPriceChange1Month(), entity.getPe(),
                         entity.getPb(), entity.getRevenueGrowth(), entity.getAssetGrowth(), entity.getOeGrowth(),
@@ -72,8 +70,8 @@ public class VietCapExportICBCsv {
 
                 for (int i = 0; i < extendHeaderList.length; i++) {
 
-                    wcu.writeLine(new String[] { currentICB, currentDate, extendHeaderList[i],
-                            extendValueList[i].toString() });
+                    wcu.writeLine(new Object[] { entity.getIcbCode(), extendHeaderList[i], extendValueList[i],
+                            currentDateTime });
                 }
             }
 
